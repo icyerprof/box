@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>Page Title</title>
+
+    </head>
+
+    <body>
+
+            <canvas id="canvas"></canvas>
+
+         <script>
+
+         
+
+// setup
+
+var canvas = document.getElementById("canvas");
+
+var ctx = canvas.getContext("2d");
+
+let h = canvas.height =window.innerWidth
+
+let w = canvas.width = window.innerWidth
+
+let monsters = []
+
+let noOfMonster = 8
+
+let gap = 50
+
+let isMove = false;
+
+
+
+
+
+canvas.addEventListener("touchstart", move)
+
+canvas.addEventListener("touchend", move)
+
+canvas.addEventListener("touchcancel", move)
+
+
+
+
+
+//Player
+
+class Player {
+
+    constructor() {
+
+        this.x = 20
+
+        this.y = h / 2
+
+        this.speed = 2
+
+        this.size = 10
+
+    }
+
+
+
+    draw() {
+
+    ctx.fillStyle = "blue" ;
+
+    ctx.fillRect(this.x, this.y, this.size, this.size)
+
+    }
+
+
+
+    move() {
+
+        if (isMove == true) player.x += player.speed
+
+    }
+
+}
+
+
+
+const player = new Player()
+
+
+
+
+
+
+
+function move(e) {
+
+    if (e.type === 'touchstart') {
+
+        isMove = true
+
+    } else {
+
+        isMove = false
+
+    }
+
+}
+
+
+
+
+
+// obstacles 
+
+
+
+class Monster {
+
+
+
+    constructor(x) {
+
+        this.x = x
+
+        this.y = h / 2
+
+        this.speed =Math.floor(Math.random() * (8 - 1 + 1) + 1)
+
+        this.size = 10
+
+        this.isUp = false
+
+    }
+
+
+
+    draw() {
+
+    ctx.fillStyle = "red"
+
+    ctx.fillRect(this.x, this.y, this.size, this.size)
+
+    }
+
+
+
+    move() {
+
+
+
+        if (this.y >= (h * .85) - this.size) {
+
+            this.isUp = true
+
+        } else if (this.y <= 0 + (h * .15)) {
+
+            this.isUp = false
+
+        }
+
+
+
+        if (this.isUp) {
+
+            this.y -= this.speed
+
+        } else {
+
+            this.y += this.speed
+
+        }
+
+    }
+
+
+
+    collision() {
+
+        if (player.x < this.x + this.size &&
+
+            player.x + player.size > this.x && 
+
+            player.y <this.y +this.size &&
+
+            player.y + player.size> this.y)  {
+
+            
+
+                player.x = 20
+
+                player.y = h / 2
+
+            }
+
+
+
+    }
+
+}
+
+
+
+
+
+for (var i = 1; i < noOfMonster; i++) {
+
+    monsters.push(new Monster(i * gap))
+
+}
+
+
+
+function reset() {
+
+    player.x = 20
+
+    player.y = h / 2
+
+    for (var i = 0; i < monsters.length ; i++) {
+
+    monsters[i].speed = Math.floor(Math.random() * 5 +1 )
+
+       
+
+        }
+
+    isMove = false
+
+
+
+}
+
+
+
+// adding win
+
+function checkWin(x) {
+
+    ctx.fillStyle="green"
+
+    ctx.fillRect(w-20,0,w,h) 
+
+    
+
+    if (player.x >=w-20 ) {
+
+    reset()
+
+    alert('win??????')
+
+
+
+    }
+
+}
+
+
+
+
+
+// gameloop 
+
+
+
+function gameloop() {
+
+    
+
+    ctx.fillStyle="black "
+
+    ctx.clearRect(0, 0, w, h)
+
+
+
+    for (var i = 0; i < monsters.length; i++) {
+
+        monsters[i].move()
+
+        monsters[i].collision()
+
+        monsters[i].draw()
+
+
+
+    }
+
+
+
+    player.draw()
+
+    player.move()
+
+
+
+    checkWin()  
+
+        requestAnimationFrame(gameloop)
+
+}
+
+gameloop()
+
+alert('touch on screen to move blue box')
+
+</script>
+
+    </body>
+
+</html>
+
+
+
+<style> 
+
+    *{
+
+    font-size: 15pt;
+
+    padding: 0;
+
+    margin: 0;
+
+    }</style>
+
